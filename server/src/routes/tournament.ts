@@ -59,3 +59,33 @@ tournamentRouter.get("/status", async (req: Request, res: Response, next) => {
     next(e);
   }
 });
+
+tournamentRouter.post("/signup/add", async (req: Request, res: Response, next) => {
+  try {
+    const user = req.user as User;
+    const tournamentRoundDateId = Number(req.query.tournamentRoundDateId);
+    if (!user) {
+      res.status(401);
+    }
+    const tournamentData = await getServices().tournament.addSignup(tournamentRoundDateId, user);
+    res.json(tournamentData);
+  } catch (e) {
+    logger.fatal("Unable to add tournament round date signup: %s", e);
+    next(e);
+  }
+});
+
+tournamentRouter.post("/signup/remove", async (req: Request, res: Response, next) => {
+  try {
+    const user = req.user as User;
+    const tournamentRoundDateId = Number(req.query.tournamentRoundDateId);
+    if (!user) {
+      res.status(401);
+    }
+    const tournamentData = await getServices().tournament.removeSignup(tournamentRoundDateId, user);
+    res.json(tournamentData);
+  } catch (e) {
+    logger.fatal("Unable to remove tournament round date signup: %s", e);
+    next(e);
+  }
+});

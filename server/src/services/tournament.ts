@@ -121,6 +121,10 @@ export class TournamentService extends BaseService {
     return schedule.map(s => s.date);
   }
 
+  async addSignup(tournamentRoundDateId: number, user: User) {}
+
+  async removeSignup(tournamentRoundDateId: number, user: User) {}
+
   async getEmails(tournamentRoundId?: number): Promise<Array<string>> {
     if (!tournamentRoundId) {
       const tournamentRound = await this.getCurrentTournamentRound();
