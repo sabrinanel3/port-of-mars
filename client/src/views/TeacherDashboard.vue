@@ -22,15 +22,23 @@
             </b-button>
           </div>
           <div>
-            <b-button
-              v-if="classrooms.length > 0"
-              variant="link"
-              class="text-decoration-none p-0 d-flex align-items-center"
-              @click="$bvModal.show('welcome-info-modal')"
-            >
-              <b-icon-info-circle class="float-left mr-2 mb-1"></b-icon-info-circle>
-              Information
-            </b-button>
+            <p class="mt-2">
+              Here, you find the information you need as a teacher to manage the games in your class
+              and information about the background of the game and sustainability concepts behind
+              the game design.
+            </p>
+            <div>
+              <b-button
+                v-if="classrooms.length > 0"
+                variant="link"
+                class="text-decoration-none p-0 d-flex align-items-center"
+                @click="$bvModal.show('welcome-info-modal')"
+                style="font-size: 1.3rem; font-weight: bold"
+              >
+                <b-icon-info-circle class="float-left mr-2 mb-1"></b-icon-info-circle>
+                Read More
+              </b-button>
+            </div>
           </div>
         </b-col>
 
@@ -257,8 +265,11 @@
       </p>
       <p>
         To get started, you need to create a classroom. You will get a number that your students can
-        use to log in. If the total number of students participating is not a multiple of five, some
-        students will play with a group that includes nice bots.
+        use to log in. After joining with a game code, students will be prompted for an identifier.
+        If you wish to be able to identify students, this can be anything you will be able to
+        identify them by, such as a student ID. This should not, however, be any kind of personally
+        identifiable information like full names. If the total number of students participating is
+        not a multiple of five, some students will play with a group that includes nice bots.
       </p>
       <p>
         You control when the game starts. It would be helpful if the students watched the tutorial
