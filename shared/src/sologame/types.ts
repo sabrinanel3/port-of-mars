@@ -10,6 +10,7 @@ export interface EventCardData {
   pointsEffect: number;
   resourcesEffect: number;
   systemHealthEffect: number;
+  clientViewHandler?: string;
 }
 
 export type ThresholdInformation = "unknown" | "range" | "known";

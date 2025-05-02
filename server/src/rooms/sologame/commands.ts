@@ -111,7 +111,8 @@ export class SetFirstRoundCmd extends CmdWithoutPayload {
     const defaults = this.defaultParams;
     this.state.round = 1;
     this.state.systemHealth = defaults.startingSystemHealth;
-    this.state.timeRemaining = defaults.timeRemaining;
+    // this.state.timeRemaining = defaults.timeRemaining;
+    this.state.timeRemaining = 18000;
     this.state.player.resources = defaults.resources;
     this.state.updateRoundInitialValues();
     this.state.isRoundTransitioning = false;

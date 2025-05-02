@@ -9,6 +9,25 @@
     body-bg-variant="dark"
   >
     <EventCard :event="event"></EventCard>
+    <div v-if="voteType" class="mt-3 p-2">
+      <p>Cast Your Vote</p>
+      <!-- for personal gain event -->
+      <div v-if="voteType === 'yes_no'">
+        <b-button variant="success" @click="submitVote('yes')">Yes</b-button>
+        <b-button variant="danger" @click="submitVote('no')">No</b-button>
+      </div>
+
+      <!-- for compulsive philanthropy event -->
+      <div v-else-if="voteType === 'player_single'">
+        <div v-for="player in players" :key="player.username">
+          <b-button variant="info" @click="submitVote(player.username)">{{
+            player.username
+          }}</b-button>
+        </div>
+      </div>
+      <!-- for hero pariah event -->
+      <div v-else-if="voteType === 'hero_pariah'"></div>
+    </div>
     <b-button class="mt-2 w-100" variant="primary" @click="$emit('continue')">Continue</b-button>
   </b-modal>
 </template>
@@ -26,8 +45,10 @@ import { EventCardData } from "@port-of-mars/shared/sologame";
 export default class EventModal extends Vue {
   @Prop() event!: EventCardData;
   @Prop({ default: false }) visible!: boolean;
+  @Prop({ default: () => [] }) players!: Array<{ username: string }>;
 
   localVisible = false;
+  voteSubmitted = false;
 
   created() {
     this.localVisible = this.visible;
@@ -53,6 +74,25 @@ export default class EventModal extends Vue {
     await this.$nextTick();
     await new Promise(resolve => setTimeout(resolve, 300));
     this.localVisible = true;
+  }
+
+  get voteType(): string | null {
+    switch (this.event.clientViewHandler) {
+      case "VOTE_YES_NO":
+        return "yes_no";
+      case "VOTE_FOR_PLAYER_SINGLE":
+        return "player_single";
+      case "VOTE_FOR_PLAYER_HERO_PARIAH":
+        return "hero_pariah";
+      default:
+        return null;
+    }
+  }
+
+  submitVote(choice: string) {
+    this.voteSubmitted = true;
+    console.log("Vote was: ", choice);
+    //FIXME: fire voting choice to server later
   }
 }
 </script>

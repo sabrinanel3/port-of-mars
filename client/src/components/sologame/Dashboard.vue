@@ -1,85 +1,164 @@
+<!-- MAKE CHANGES HERE FOR TRIO GAME -->
 <template>
   <div class="d-flex flex-column p-2 h-100 overflow-hidden solo-game">
     <EventModal
       v-if="state.activeCardId >= 0"
       :event="activeCard"
       :visible="state.activeCardId >= 0"
+      :players="mockPlayerList" 
       @continue="handleEventContinue"
     />
-    <div class="d-flex flex-row flex-grow-1 overflow-hidden">
+
+    <div class="d-flex flex-row flex-grow-0 overflow-hidden" style="gap: 0.5rem; font-size: 0.875rem">
+    <div class="d-flex flex-column justify-content-start align-items-center p-2">
+        
+          <!-- FIXME: need to loop through all players in game (3) and print their role and points -->
+
+          <div class="cell-grow p-3 mb-3 rounded" style="background-color: #2b2222">
+            <div
+            v-for="player in mockPlayerList"
+            :key="player.username"
+            :style="{
+              border: player.role === myRole ? '3px solid #f0ad4e' : '1px solid #444',
+            }"
+            >
+              <div class="d-flex align-items-center mb-4">
+                <img :src="$getAssetUrl(`characters\${player.role}.png`)" style="height: 48px; margin-right: 10px"/>
+                <div>
+                  <p class="mb-1">Current role: <strong>{{player.role}}</strong></p>
+                  <p class="mb-0">Points: <strong>{{ player.points }}</strong></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- MOCK DATA FOR UI WORK -->
+          
+            <!-- <div class="cell-grow p-3 mb-3 rounded" style="background-color: #2b2222">
+
+            <div class="d-flex align-items-center mb-4">
+              <img :src="$getAssetUrl('characters/Politician.png')" alt="Politician Avatar" style="height: 48px; margin-right: 10px"/>
+              <img :src="$getAssetUrl('icons/government.svg')" alt="Government icon" style="height: 48px; margin-right: 10px"/>
+              
+              <div>
+                <p class="mb-1">Current role: <strong>Politician</strong></p>
+                <p class="mb-0">Points: <strong>#</strong></p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center mb-4">
+              <img :src="$getAssetUrl('characters/Curator.png')" alt="Curator Avatar" style="height: 48px; margin-right: 10px"/>
+              <img :src="$getAssetUrl('icons/culture.svg')" alt="Culture icon" style="height: 48px; margin-right: 10px"/>
+              
+              <div>
+                <p class="mb-1">Current role: <strong>Curator</strong></p>
+                <p class="mb-0">Points: <strong>#</strong></p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center mb-4">
+              <img :src="$getAssetUrl('characters/Pioneer.png')" alt="Pioneer Avatar" style="height: 48px; margin-right: 10px"/>
+              <img :src="$getAssetUrl('icons/legacy.svg')" alt="Legacy icon" style="height: 48px; margin-right: 10px"/>
+              
+              <div>
+                <p class="mb-1">Current role: <strong>Pioneer</strong></p>
+                <p class="mb-0">Points: <strong>#</strong></p>
+              </div>
+            </div>
+          
+           </div> -->
+      </div>
+      
       <div class="d-flex flex-column flex-grow-1 overflow-hidden">
-        <div
-          v-if="state.treatmentParams.isLowResSystemHealth"
-          class="d-flex flex-shrink-1 m-2 mt-3"
-        >
-          <SegmentedBar
-            :min="0"
-            :max="5"
-            :delta="0"
-            v-model="lowResSystemHealth"
-            :customTextDisplay="lowResSystemHealthText"
-            label="System Health"
-            class="flex-grow-1"
-            variant="green"
-          />
-        </div>
-        <div v-else class="d-flex flex-shrink-1 m-2 mt-3">
-          <SegmentedBar
-            :min="0"
-            :max="25"
-            :delta="pendingSystemHealthInvestment"
-            v-model="state.systemHealth"
-            label="System Health"
-            class="flex-grow-1"
-            variant="green"
-          />
-        </div>
-        <div
-          class="d-flex flex-md-row flex-column flex-grow-1 overflow-hidden mh-50 justify-content-center"
-        >
-          <div v-if="!isProlificBaselineGame" class="cell-grow mw-35">
-            <div>
-              <ThresholdInfo
-                v-if="state.treatmentParams.thresholdInformation !== 'unknown'"
-                :state="state"
+        <div>
+            <div
+              v-if="state.treatmentParams.isLowResSystemHealth"
+              class="d-flex flex-shrink-1 m-2 mt-3"
+            >
+              <SegmentedBar
+                :min="0"
+                :max="5"
+                :delta="0"
+                v-model="lowResSystemHealth"
+                :customTextDisplay="lowResSystemHealthText"
+                label="System Health"
+                class="flex-grow-1"
+                variant="green"
               />
-              <div v-else class="d-flex flex-column align-items-center justify-content-center">
-                <h1 class="text-danger mb-3"><b-icon icon="eye-slash-fill" /></h1>
-                <h4 class="text-danger text-uppercase text-center">
-                  Threshold Sensors Unavailable
+            </div>
+            <div v-else class="d-flex flex-shrink-1 m-2 mt-3">
+              <SegmentedBar
+                :min="0"
+                :max="25"
+                :delta="pendingSystemHealthInvestment"
+                v-model="state.systemHealth"
+                label="System Health"
+                class="flex-grow-1"
+                variant="green"
+              />
+            </div>
+
+            <div
+              class="d-flex flex-md-row flex-column flex-grow-1 overflow-hidden mh-50 justify-content-center"
+            >
+              <div v-if="!isProlificBaselineGame" class="cell-grow mw-35">
+                <div>
+                  <ThresholdInfo
+                    v-if="state.treatmentParams.thresholdInformation !== 'unknown'"
+                    :state="state"
+                  />
+                  <div v-else class="d-flex flex-column align-items-center justify-content-center">
+                    <h1 class="text-danger mb-3"><b-icon icon="eye-slash-fill" /></h1>
+                    <h4 class="text-danger text-uppercase text-center">
+                      Threshold Sensors Unavailable
+                    </h4>
+                </div>
+              </div>
+              </div>
+
+              <div class="cell-grow mw-35 d-flex flex-column justify-content-center">
+                <h4 class="text-center">
+                  {{ state.isRoundTransitioning ? "New round in" : "Time Remaining" }}
                 </h4>
+                <div class="d-flex justify-content-center">
+                  <Clock :timeRemaining="state.timeRemaining" :size="3" />
               </div>
-            </div>
-          </div>
-          <div class="cell-grow mw-35 d-flex flex-column justify-content-center">
-            <h4 class="text-center">
-              {{ state.isRoundTransitioning ? "New round in" : "Time Remaining" }}
-            </h4>
-            <div class="d-flex justify-content-center">
-              <Clock :timeRemaining="state.timeRemaining" :size="3" />
-            </div>
-          </div>
-          <div
-            v-if="state.isRoundTransitioning"
-            class="cell-grow mw-25 d-flex flex-column justify-content-center"
-          >
-            <HealthGained :systemHealthGained="systemHealthGained" :pointsGained="pointsGained" />
-          </div>
-          <div v-else class="cell-grow mw-25 d-flex flex-column justify-content-center">
-            <div>
-              <h4 class="text-center">Round</h4>
-            </div>
-            <div class="d-flex justify-content-center align-items-center">
-              <div class="vfd-container p-2">
-                <VFDNumberDisplay :digits="2" :value="state.round" variant="red" size="2" />
-              </div>
-              <h4 v-if="state.treatmentParams.isNumberOfRoundsKnown" class="mx-2">/</h4>
-              <div v-if="state.treatmentParams.isNumberOfRoundsKnown" class="vfd-container p-2">
-                <VFDNumberDisplay :digits="2" :value="state.maxRound" variant="red" size="2" />
+             </div>
+              <div
+                v-if="state.isRoundTransitioning"
+                class="cell-grow mw-25 d-flex flex-column justify-content-center"
+              >
+                <HealthGained :systemHealthGained="systemHealthGained" :pointsGained="pointsGained"/>
+             </div>
+              <div v-else class="cell-grow mw-25 d-flex flex-column justify-content-center">
+                <div>
+                  <h4 class="text-center">Round</h4>
+               </div>
+                <div class="d-flex justify-content-center align-items-center">
+                  <div class="vfd-container p-2">
+                    <VFDNumberDisplay :digits="2" :value="state.round" variant="red" size="2" />
+                  </div>
+                <h4 v-if="state.treatmentParams.isNumberOfRoundsKnown" class="mx-2">/</h4>
+                <div v-if="state.treatmentParams.isNumberOfRoundsKnown" class="vfd-container p-2">
+                  <VFDNumberDisplay :digits="2" :value="state.maxRound" variant="red" size="2" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        
+      </div>
+        <div
+          v-if="!isProlificBaselineGame"
+          class="cell-shrink mw-25"
+          style="min-width: 25%; padding: 0.5em"
+        >
+          <h4>Events</h4>
+          <Deck :events="state.visibleEventCards" @active-card-changed="handleActiveCardChange" />
+        </div>
+    </div>
+
         <div
           class="d-flex flex-md-row flex-column flex-grow-1 overflow-hidden mh-50"
           style="min-height: 18rem"
@@ -96,9 +175,9 @@
                 size="md"
                 variant="yellow"
               />
-            </div>
-            <div>
-              <h4>Available Resources</h4>
+        </div>
+        <div>
+            <h4>Available Resources</h4>
               <SegmentedBar
                 :min="0"
                 :max="15"
@@ -106,24 +185,12 @@
                 variant="blue"
                 size="md"
               />
-            </div>
+          </div>
           </div>
           <div class="cell-grow mw-50">
-            <Investment
-              :state="state"
-              v-model="pendingSystemHealthInvestment"
-              @invest="handleInvest"
-            />
+            <Investment :state="state" v-model="pendingSystemHealthInvestment" @invest="handleInvest"/>
           </div>
         </div>
-      </div>
-      <div
-        v-if="!isProlificBaselineGame"
-        class="cell-shrink mw-25"
-        style="min-width: 25%; padding: 0.5em"
-      >
-        <h4>Events</h4>
-        <Deck :events="state.visibleEventCards" @active-card-changed="handleActiveCardChange" />
       </div>
     </div>
   </div>
@@ -190,6 +257,19 @@ export default class Dashboard extends Vue {
       5: "GREAT",
     };
     return map[this.lowResSystemHealth];
+  }
+
+  get myRole() {
+    //return this.state.player?.role; //FIXME: player currently does not have a role
+    return "Pioneer";
+  }
+
+  get mockPlayerList() {
+    return [
+      {username: "Player1", role: "Politician", points: 2},
+      {username: "Player2", role: "Curator", points: 2},
+      {username: "Player3", role: "Pioneer", points: 2},
+    ];
   }
 
   handleInvest(investment: number) {
